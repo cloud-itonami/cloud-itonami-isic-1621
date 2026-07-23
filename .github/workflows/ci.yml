@@ -1,0 +1,23 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: orgs/cloud-itonami/cloud-itonami-isic-1621
+      - uses: actions/checkout@v4
+        with: {repository: kotoba-lang/langchain, path: orgs/kotoba-lang/langchain}
+      - uses: actions/checkout@v4
+        with: {repository: kotoba-lang/langgraph, path: orgs/kotoba-lang/langgraph}
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: DeLaGuardo/setup-clojure@13.4
+        with: { cli: latest, github-token: "${{ secrets.GITHUB_TOKEN }}" }
+      - name: lint
+        working-directory: orgs/cloud-itonami/cloud-itonami-isic-1621
+        run: clojure -M:lint
+      - name: test
+        working-directory: orgs/cloud-itonami/cloud-itonami-isic-1621
+        run: clojure -M:test
