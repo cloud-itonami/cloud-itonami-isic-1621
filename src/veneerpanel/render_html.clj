@@ -18,7 +18,7 @@
   Usage: `clojure -M:dev:render-html [out-file]`
   (default `docs/samples/operator-console.html`)."
   (:require [jp-go-dds.skin]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [veneerpanel.store :as store]
             [veneerpanel.operation :as op]
             [langgraph.graph :as g]))
