@@ -17,7 +17,7 @@ jobs:
         with: { cli: latest, github-token: "${{ secrets.GITHUB_TOKEN }}" }
       - name: lint
         working-directory: orgs/cloud-itonami/cloud-itonami-isic-1621
-        run: clojure -M:lint
+        run: kbb -M:lint
       - name: test
         working-directory: orgs/cloud-itonami/cloud-itonami-isic-1621
-        run: clojure -M:test
+        run: kbb -M:test
