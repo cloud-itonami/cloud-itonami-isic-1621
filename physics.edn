@@ -1,0 +1,32 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README has no "Robotics premise" section. The wood-panel plant peels
+;; veneer, spreads glue and hot-presses panels. Its physical work here:
+;; hot-pressing a plywood panel until its middle glue line cures, and
+;; vacuum-lifting veneer sheets from the dryer outfeed onto the stack.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-1621"
+ :cases
+ [{:id :plywood-hot-press
+   :kind :thermal
+   :procedure "a glued plywood lay-up is pressed between hot platens until the middle glue line reaches curing temperature; swept :thickness-m is HALF the thickness (heated face to mid-plane), mid-plane adiabatic by symmetry, so the back face is the middle"
+   :params {:conductivity-w-mk 0.12 :density-kg-m3 550.0 :specific-heat-j-kgk 1700.0
+            :t0-c 25.0 :t-hot-c 130.0 :h-front-w-m2k 1000.0 :t-back-ambient-c 25.0 :h-back-w-m2k 0.0
+            :threshold-c 100.0 :duration-s 1800.0 :nodes 11}
+   :sweep {:param :thickness-m :values [0.003 0.006 0.009 0.012 0.015]}
+   :quantity :time-to-threshold-s
+   :limit {:max 600.0 :basis "estimate: 10-minute hot-press cycle"}
+   :boundary {:lo 0.001 :hi 0.03}}
+  {:id :veneer-sheet-stacking
+   :kind :manipulator
+   :procedure "vacuum-gripper arm lifts a dried veneer sheet from the dryer outfeed onto the grading stack"
+   :params {:l1-m 0.60 :l2-m 0.55 :m1-kg 8.0 :m2-kg 5.0
+            :from [0.80 0.30] :to [0.40 -0.20] :duration-s 2.0 :steps 400}
+   :sweep {:param :payload-kg :values [2.0 3.0 4.0 5.0 6.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 80.0 :basis "estimate: continuous shoulder torque of a ~10 kg class handling arm (sheet plus vacuum gripper counted as payload)"}
+   :boundary {:lo 0.5 :hi 30.0}}]}
